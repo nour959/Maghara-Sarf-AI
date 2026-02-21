@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مغارة الحروف السحرية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        
+        :root { --primary: #FF6B6B; --secondary: #4ECDC4; --accent: #FFE66D; --dark: #2F2E41; --purple: #a855f7; }
+        
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background: #f0f9ff; background-image: radial-gradient(#dcfce7 1px, transparent 1px); background-size: 20px 20px;
+            margin: 0; padding: 20px; color: var(--dark); overflow-x: hidden;
+        }
+
+        .game-header { text-align: center; margin-bottom: 40px; }
+        .game-header h1 { font-size: 3.5rem; color: var(--primary); text-shadow: 4px 4px 0px white; margin-bottom: 5px; font-weight: 900; }
+        
+        nav { display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; }
+        nav a { 
+            text-decoration: none; padding: 15px 30px; border-radius: 50px; 
+            background: white; color: var(--dark); font-weight: bold; 
+            box-shadow: 0 6px 0px #ddd; transition: 0.3s;
+        }
+        nav a:hover { transform: translateY(-3px); box-shadow: 0 9px 0px #ddd; background: var(--accent); }
+
+        .mission-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 25px; max-width: 1200px; margin: 0 auto; 
+        }
+
+        .mission-card { 
+            background: rgba(255, 255, 255, 0.95); border-radius: 30px; padding: 30px; 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05); border: 4px solid transparent;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;
+        }
+        .mission-card:hover { transform: translateY(-10px); border-color: var(--secondary); }
+        .mission-card h2 { margin-top: 0; font-size: 1.8rem; display: flex; align-items: center; gap: 10px; color: var(--purple); }
+
+        .magic-input { 
+            width: 100%; border: 3px solid #eee; border-radius: 20px; padding: 15px; 
+            font-size: 1.2rem; outline: none; transition: 0.3s; margin-bottom: 12px; box-sizing: border-box;
+            text-align: center; font-weight: bold;
+        }
+        .magic-input:focus { border-color: var(--primary); background: #fffdf0; }
+
+        .magic-btn { 
+            width: 100%; padding: 18px; border: none; border-radius: 20px; 
+            color: white; font-weight: bold; font-size: 1.3rem; cursor: pointer;
+            box-shadow: 0 8px 0px rgba(0,0,0,0.1); transition: 0.2s;
+        }
+        .magic-btn:active { transform: translateY(4px); box-shadow: none; }
+
+        .scroll-box { margin-top: 20px; max-height: 250px; overflow-y: auto; border-radius: 20px; background: #fdfdfd; padding: 10px; border: 2px inset #eee; }
+        .result-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        .result-table td { 
+            padding: 15px; background: white; border-radius: 15px; 
+            text-align: center; cursor: pointer; border: 2px solid #f0f0f0; transition: 0.2s;
+            position: relative;
+        }
+        .result-table td:hover { background: var(--accent); border-color: #f59e0b; }
+        .result-table td::after { content: '🔊'; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 1rem; opacity: 0.5; }
+
+        .color-purple { border-bottom: 10px solid var(--purple); }
+        .color-green { border-bottom: 10px solid var(--secondary); }
+        .color-yellow { border-bottom: 10px solid #f59e0b; }
+        .color-red { border-bottom: 10px solid var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div class="game-header animate__animated animate__bounceIn">
+        <h1>✨ مغارة الكلمات ✨</h1>
+        <p>مرحباً بك يا بطل! استكشف سحر اللغة العربية بالضغط على النتائج لسماعها.</p>
+    </div>
+
+    <nav>
+        <a href="/view_roots">🌳 غابة الجذور</a>
+        <a href="/view_schemes">📜 كتاب الأوزان</a>
+    </nav>
+
+    <div class="mission-grid">
+        <div class="mission-card color-purple animate__animated animate__zoomIn">
+            <h2>🕵️ مجهر الكلمات</h2>
+            <input type="text" id="iWord" class="magic-input" placeholder="اكتب كلمة هنا">
+            <button class="magic-btn" style="background: var(--purple);" onclick="api('/identify', {word: v('iWord')}, 'resId')">حلل الكلمة</button>
+            <div id="resId" class="scroll-box"></div>
+        </div>
+
+        <div class="mission-card color-yellow animate__animated animate__zoomIn" style="animation-delay: 0.1s;">
+            <h2>🪄 عصا الاشتقاق</h2>
+            <input type="text" id="rGen" class="magic-input" placeholder="3 حروف (مثلاً: كتب)">
+            <button class="magic-btn" style="background: #f59e0b;" onclick="api('/generate_all', {root: v('rGen')}, 'resGen')">اشتق الكلمات</button>
+            <div id="resGen" class="scroll-box"></div>
+        </div>
+
+        <div class="mission-card color-green animate__animated animate__zoomIn" style="animation-delay: 0.2s;">
+            <h2>✅ ميزان العدالة</h2>
+            <input type="text" id="vWord" class="magic-input" placeholder="الكلمة (مكتوب)">
+            <input type="text" id="vRoot" class="magic-input" placeholder="الجذر (كتب)">
+            <button class="magic-btn" style="background: var(--secondary);" onclick="api('/verify', {word: v('vWord'), root: v('vRoot')}, 'resV')">تحقق ومزامنة</button>
+            <div id="resV" class="scroll-box"></div>
+        </div>
+
+        <div class="mission-card color-red animate__animated animate__zoomIn" style="animation-delay: 0.3s;">
+            <h2>⚙️ إدارة الجذور</h2>
+            <input type="text" id="mRoot" class="magic-input" placeholder="3 حروف">
+            <div style="display: flex; gap: 10px;">
+                <button class="magic-btn" style="background: var(--secondary);" onclick="api('/manage', {root: v('mRoot'), action:'add'})">إضافة</button>
+                <button class="magic-btn" style="background: var(--primary);" onclick="api('/manage', {root: v('mRoot'), action:'delete'})">حذف</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const v = (id) => document.getElementById(id).value;
+
+        // Fonction de lecture vocale SANS caractères invisibles ni lecture de points
+        function speakClean(word, scheme) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                
+                // On crée deux parties distinctes pour assurer une pause réelle
+                const msg1 = new SpeechSynthesisUtterance(word);
+                const msg2 = new SpeechSynthesisUtterance("على وزن " + scheme);
+                
+                [msg1, msg2].forEach(m => { m.lang = 'ar-SA'; m.rate = 0.85; });
+
+                window.speechSynthesis.speak(msg1);
+                msg1.onend = () => {
+                    setTimeout(() => window.speechSynthesis.speak(msg2), 400);
+                };
+            }
+        }
+
+        async function api(path, data, resId) {
+            const r = await fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data)});
+            const res = await r.json();
+            const box = document.getElementById(resId);
+            
+            if(res.error) { 
+                box.innerHTML = `<p style="color:red; font-weight:bold; padding:10px;">⚠️ ${res.error}</p>`; 
+                return; 
+            }
+            if(res.success) { alert("🌟 " + res.success); location.reload(); return; }
+            
+            if(res.results) {
+                let h = '<table class="result-table">';
+                res.results.forEach(x => {
+                    const word = x.word || x.root;
+                    const scheme = x.scheme;
+                    // L'événement onclick est ajouté ici pour chaque ligne
+                    h += `<tr onclick="speakClean('${word}', '${scheme}')">
+                            <td>
+                                <div style="font-size:1.3rem; font-weight:900; color:var(--dark);">${word}</div>
+                                <div style="color:var(--purple); font-size:0.9rem;">الوزن: ${scheme}</div>
+                            </td>
+                          </tr>`;
+                });
+                box.innerHTML = h + '</table>';
+            } else if(res.message) {
+                // Pour la vérification, on permet de cliquer sur le message de succès pour l'entendre
+                box.innerHTML = `<div class="animate__animated animate__pulse" 
+                                     onclick="this.style.opacity=0.7"
+                                     style="background:#dcfce7; padding:15px; border-radius:15px; color:#166534; font-weight:bold; border:2px solid #22c55e; cursor:pointer; text-align:center;">
+                                     🌟 ${res.message}
+                                 </div>`;
+            }
+        }
+    </script>
+</body>
+</html>
