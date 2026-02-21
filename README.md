@@ -20,6 +20,8 @@ git clone [https://github.com/nour959/Maghara-Sarf-AI.git](https://github.com/no
 cd Maghara-Sarf-AI
 
 2. Créer un environnement virtuel
+
+
 Sur Linux/macOS
 
 
@@ -44,4 +46,5 @@ pip install -r requirements.txt
 
 
 python app.py
+
 
