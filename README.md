@@ -20,12 +20,20 @@ git clone [https://github.com/nour959/Maghara-Sarf-AI.git](https://github.com/no
 cd Maghara-Sarf-AI
 
 2. Créer un environnement virtuel
-# Sur Linux/macOS
+Sur Linux/macOS
+
+
 python3 -m venv venv
+
+
 source venv/bin/activate
 
-# Sur Windows
+Sur Windows
+
+
 python -m venv venv
+
+
 venv\Scripts\activate
 
 3. Installer les dépendances
@@ -36,3 +44,4 @@ pip install -r requirements.txt
 
 
 python app.py
+
