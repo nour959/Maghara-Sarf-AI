@@ -16,7 +16,6 @@ Une application web ludique et éducative conçue pour apprendre la morphologie 
 Suivez ces étapes pour lancer le projet sur votre machine locale :
 
 1. Cloner le projet
-```bash
 git clone [https://github.com/nour959/Maghara-Sarf-AI.git](https://github.com/nour959/Maghara-Sarf-AI.git)
 cd Maghara-Sarf-AI
 
@@ -34,5 +33,6 @@ venv\Scripts\activate
 pip install -r requirements.txt
 
 4. Lancer l'application
+
 
 python app.py
